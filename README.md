@@ -58,6 +58,18 @@ source my_env/bin/activate
 pip install -r requirements.txt
 ```
 ---
+
+## 🗓️ Project Timeline
+
+| Date       | Task Description                                  |
+|------------|---------------------------------------------------|
+| 23/04      | Define core functionalities and data modeling     |
+| 24/04      | Create and initialize the database (SQLite/PostgreSQL) |
+| 25/04      | Implement data entry interface (CLI or simple UI) |
+| 26/04      | Data analysis logic + basic visual summaries      |
+| 27/04      | Finalize presentation and documentation           |
+
+---
 ## ❤️ Dedication
 
 This project is dedicated to **Hannah Zukerman**, my beloved daughter, whose strength and uniqueness inspire this work.
