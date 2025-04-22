@@ -1,4 +1,4 @@
-# Non-Verbal Communication Tracker for Children with ASD
+# 🧩 Non-Verbal Communication Tracker for Children with ASD
 
 **Members:**  
 Liliane Zukerman and Sharon Fogel
