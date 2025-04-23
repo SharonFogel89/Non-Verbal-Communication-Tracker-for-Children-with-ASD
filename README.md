@@ -70,6 +70,58 @@ pip install -r requirements.txt
 | 27/04      | Finalize presentation and documentation           |
 
 ---
+# 🧠 Non-Verbal Communication Tracker – Core Features
+
+## 1. Register a Child
+- **Fields**: Name, Date of birth, Date of diagnosis, Additional notes
+
+## 2. Register an Observer
+- **Fields**: Name, Relationship (e.g., mother, therapist, assistant), Notes (e.g., “Autism specialist”)
+
+## 3. Record a Behavior
+- **Fields**:
+  - Date of behavior
+  - Child
+  - Observer
+  - Type of behavior (e.g., gesture, eye contact)
+  - Category (e.g., social, communication)
+  - Duration (if applicable)
+  - Free description (e.g., “Waved back when greeted bye”)
+  - Is it consolidated? (Boolean)
+
+## 4. List of Records
+- View all recorded behaviors by date
+- Filter by:
+  - Type
+  - Category
+  - Observer
+
+## 5. Summary by Category or Type
+- Show how many records there are per:
+  - Category (e.g., social, communication)
+  - Type (e.g., eye contact, vocalization)
+
+## 6. Simple Alerts
+- Example: “No new behaviors recorded in 7 days.”
+- Helps detect regressions or oversights
+
+## 7. Recording of Milestones
+- Record important developmental events
+  - Examples:
+    - "Imitated gesture for the first time"
+    - "Responded to name"
+- Can be used to highlight achievements
+
+## 8. CSV Export
+- Export data to Excel/CSV format
+- Useful for sharing with therapists or saving as a history
+
+## 9. Multilingual Interface (Basic)
+- Initial support for:
+  - Portuguese 🇧🇷
+  - English 🇺🇸
+  - Hebrew 🇮🇱
+---
 ## ❤️ Dedication
 
 This project is dedicated to **Hannah Zukerman**, my beloved daughter, whose strength and uniqueness inspire this work.
