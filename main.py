@@ -1,6 +1,7 @@
 from core.models import Child, Observer, BehaviorType, BehaviorEntry
 from core.logic import add_child, list_all_children, add_observer, list_all_observer
-from core.logic import list_all_behavior_type, add_behavior_entry
+from core.logic import list_all_behavior_type, add_behavior_entry, list_behaviors_by_child
+
 
 from datetime import date
 
@@ -11,6 +12,8 @@ def show_menu():
     print("3. Add a new Observer")
     print("4. List all Observers")
     print("5. Add a new Behavior Entry")
+    print("6. Lists all behavior entries for a specific child")
+
     print("0. Exit")
 
 def main():
@@ -105,6 +108,27 @@ def main():
 
             behavior_entry_id = add_behavior_entry(behavior_entry)
             print(f"behavior entry {behavior_type_id} added with ID: {behavior_entry_id}")
+
+        elif choice == "6":
+            
+            children = list_all_children()
+            print("\nRegistered children:")
+            for child in children:
+                print(f"- {child.id}: {child.name} (Birthday: {child.date_of_birth})")
+
+            child_id = input("Enter child ID to list behaviors: ")
+            behaviors = list_behaviors_by_child(child_id)
+
+            print("\nBehaviors registered for the child:")
+            for behavior in behaviors:
+                behavior_id = behavior[0]
+                behavior_date = behavior[4]
+                notes = behavior[5]
+                consolidated = behavior[7]
+                base = behavior[8]
+                behavior_name = behavior[9]
+
+                print(f"- {behavior_date}: {behavior_name} | Consolidated: {consolidated} | Pre-existing: {base} | Notes: {notes or 'None'}")
 
 
         elif choice == "0":

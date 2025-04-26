@@ -130,3 +130,34 @@ def add_behavior_entry(entry: BehaviorEntry):
     conn.close()
 
     return entry.id
+
+
+def list_behaviors_by_child(child_id):
+    """
+    Lists all behavior entries for a specific child, including behavior type name.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT 
+            behavior_entry.id,
+            behavior_entry.child_id,
+            behavior_entry.observer_id,
+            behavior_entry.behavior_type_id,
+            behavior_entry.behavior_date,
+            behavior_entry.notes,
+            behavior_entry.duration_sec,
+            behavior_entry.consolidated,
+            behavior_entry.base,
+            behavior_type.name AS behavior_name
+        FROM behavior_entry
+        JOIN behavior_type ON behavior_entry.behavior_type_id = behavior_type.id
+        WHERE behavior_entry.child_id = %s
+        ORDER BY behavior_entry.behavior_date ASC;
+    """, (child_id,))
+    
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return rows 
