@@ -1,5 +1,5 @@
 from core.db_connection import get_connection
-from core.models import Child
+from core.models import Child, Observer
 
 def add_child(child: Child):
     """
@@ -39,3 +39,30 @@ def list_all_children():
     conn.close()
 
     return [Child(*row) for row in rows]
+
+
+
+def add_observer(observer: Observer):
+    """
+    Inserts a new observer into the database using a Observer object.
+    Returns the new observer ID.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO observer (name, relation, notes)
+        VALUES (%s, %s, %s)
+        RETURNING id;
+    """, (
+        observer.name,
+        observer.relation,
+        observer.notes
+    ))
+
+    observer.id = cur.fetchone()[0]
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return observer.id
