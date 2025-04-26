@@ -1,5 +1,5 @@
 from core.db_connection import get_connection
-from core.models import Child, Observer, BehaviorEntry, BehaviorType
+from core.models import Child, Observer, BehaviorEntry, BehaviorType, Category
 
 def add_child(child: Child):
     """
@@ -161,3 +161,59 @@ def list_behaviors_by_child(child_id):
     conn.close()
 
     return rows 
+
+
+def filter_behaviors(child_id=None, category_id=None, observer_id=None, is_consolidated=None):
+    """
+    Filters behavior entries based on optional parameters.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+
+    query = """
+        SELECT behavior_entry.*, behavior_type.name, category.name
+        FROM behavior_entry
+        JOIN behavior_type ON behavior_entry.behavior_type_id = behavior_type.id
+        JOIN category ON behavior_type.category_id = category.id
+        WHERE 1=1
+    """
+    params = []
+
+    if child_id:
+        query += " AND behavior_entry.child_id = %s"
+        params.append(child_id)
+
+    if category_id:
+        query += " AND behavior_type.category_id = %s"
+        params.append(category_id)
+
+    if observer_id:
+        query += " AND behavior_entry.observer_id = %s"
+        params.append(observer_id)
+
+    if is_consolidated is not None:
+        query += " AND behavior_entry.consolidated = %s"
+        params.append(is_consolidated)
+
+    query += " ORDER BY behavior_entry.behavior_date ASC"
+
+    cur.execute(query, tuple(params))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return rows
+
+
+def list_all_categories():
+    """
+    Lists all the categories  in the database.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM category;")
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return [Category(*row) for row in rows]

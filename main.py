@@ -1,6 +1,7 @@
 from core.models import Child, Observer, BehaviorType, BehaviorEntry
 from core.logic import add_child, list_all_children, add_observer, list_all_observer
 from core.logic import list_all_behavior_type, add_behavior_entry, list_behaviors_by_child
+from core.logic import list_all_categories, filter_behaviors
 
 
 from datetime import date
@@ -13,6 +14,7 @@ def show_menu():
     print("4. List all Observers")
     print("5. Add a new Behavior Entry")
     print("6. Lists all behavior entries for a specific child")
+    print("7. Filters behavior entries based child, category, observer or/and is consolidated")
 
     print("0. Exit")
 
@@ -130,6 +132,45 @@ def main():
 
                 print(f"- {behavior_date}: {behavior_name} | Consolidated: {consolidated} | Pre-existing: {base} | Notes: {notes or 'None'}")
 
+
+        elif choice == "7":
+            
+            children = list_all_children()
+            print("\nRegistered children:")
+            for child in children:
+                print(f"- {child.id}: {child.name} (Birthday: {child.date_of_birth})")
+
+            child_id = input("Enter child ID to filter behaviors (or leave blank): ") or None
+
+            categories = list_all_categories()
+            print("\nCategories:")
+            for category in categories:
+                print(f"- {category.id}: {category.name}, {category.description}")
+
+            category_id = input("Enter category ID to filter (or leave blank): ") or None
+
+            observers = list_all_observer()
+            print("\nRegistered observer:")
+            for observer in observers:
+                print(f"- {observer.id}: {observer.name}, {observer.relation}")
+            observer_id = input("Enter observer ID to filter (or leave blank): ") or None
+            
+            is_consolidated_input = input("Only consolidated behaviors? (yes/no/blank): ").lower()
+
+            if is_consolidated_input in ["yes", "y", "YES", "Yes","Y"]:
+                is_consolidated = True
+            elif is_consolidated_input in ["no", "n", "NO", "No","N"]:
+                is_consolidated = False
+            else:
+                is_consolidated = None
+
+            behaviors = filter_behaviors(child_id, category_id, observer_id, is_consolidated)
+
+            if behaviors:
+                for behavior in behaviors:
+                    print(f"- {behavior[4]}: {behavior[-2]} ({behavior[-1]}) - Consolidated: {behavior[7]}")
+            else:
+                print(f"No behavior")
 
         elif choice == "0":
             print("Goodbye!")
