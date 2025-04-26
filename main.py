@@ -2,7 +2,7 @@ from core.models import Child, Observer, BehaviorType, BehaviorEntry
 from core.logic import add_child, list_all_children, add_observer, list_all_observer
 from core.logic import list_all_behavior_type, add_behavior_entry, list_behaviors_by_child
 from core.logic import list_all_categories, filter_behaviors, get_behavior_summary_by_category
-from core.logic import list_milestone_behavior_types
+from core.logic import list_milestone_behavior_types, get_behavior_timeline_monthly, get_behavior_timeline_weekly
 
 
 from datetime import date
@@ -18,6 +18,8 @@ def show_menu():
     print(" 7. Filters behavior entries based child, category, observer or/and is consolidated")
     print(" 8. Behavior Summary by Category")
     print(" 9. Lists all behavior types marked as milestone")
+    print("10. Timeline (monthly)")
+    print("11. Timeline (weekly)")
     print(" 0. Exit")
 
 def main():
@@ -195,6 +197,38 @@ def main():
             for milestone_behavior in milestone_behaviors:
                 print(f"- {milestone_behavior.id}: {milestone_behavior.name} — {milestone_behavior.description}")
 
+        elif choice == "10":
+            children = list_all_children()
+            print("\nRegistered children:")
+            for child in children:
+                print(f"- {child.id}: {child.name} (Birthday: {child.date_of_birth})")
+            
+            child_id = input("Enter child ID for timeline (monthly): ")
+
+            timeline = get_behavior_timeline_monthly(child_id)
+
+            if timeline:
+                print("\nBehavior Timeline (monthly):")
+                for month, behavior_count in timeline:
+                    print(f"- {month.strftime('%Y-%m')}: {behavior_count} behaviors")
+            else:
+                print("No behaviors found for this child.")
+
+        elif choice == "11":
+            children = list_all_children()
+            print("\nRegistered children:")
+            for child in children:
+                print(f"- {child.id}: {child.name} (Birthday: {child.date_of_birth})")
+            
+            child_id = input("Enter child ID for timeline (weekly): ")
+            timeline = get_behavior_timeline_weekly(child_id)
+
+            if timeline:
+                print("\nBehavior Timeline (weekly):")
+                for week, behavior_count in timeline:
+                    print(f"- {week.strftime('%Y-%m')}: {behavior_count} behaviors")
+            else:
+                print("No behaviors found for this child.")
 
         elif choice == "0":
             print("Goodbye!")

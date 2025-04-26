@@ -309,3 +309,50 @@ def list_milestone_behavior_types():
     conn.close()
 
     return [BehaviorType(*row) for row in rows]
+
+
+def get_behavior_timeline_monthly(child_id):
+    """
+    Returns the number of behaviors registered per month for a specific child.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    cur.execute("""
+        SELECT 
+            DATE_TRUNC('month', behavior_date) AS month,
+            COUNT(*) AS behavior_count
+        FROM behavior_entry
+        WHERE child_id = %s
+        GROUP BY month
+        ORDER BY month ASC;
+    """, (child_id,))
+    
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return rows  
+
+def get_behavior_timeline_weekly(child_id):
+    """
+    Returns the number of behaviors registered per week for a specific child.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    cur.execute("""
+        SELECT 
+            DATE_TRUNC('week', behavior_date) AS week,
+            COUNT(*) AS behavior_count
+        FROM behavior_entry
+        WHERE child_id = %s
+        GROUP BY week
+        ORDER BY week ASC;
+    """, (child_id,))
+    
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return rows  
