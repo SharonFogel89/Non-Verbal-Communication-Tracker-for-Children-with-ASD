@@ -28,13 +28,13 @@ class BehaviorType:
         self.is_milestone = is_milestone
 
 class BehaviorEntry:
-    def __init__(self, id, child_id, observer_id, behavior_type_id, category_id,
+    def __init__(self, id, child_id, observer_id, behavior_type_id,
                  behavior_date, notes, duration_sec, consolidated, base):
         self.id = id
         self.child_id = child_id
         self.observer_id = observer_id
         self.behavior_type_id = behavior_type_id
-        self.category_id = category_id
+        #self.category_id = category_id
         self.behavior_date = behavior_date
         self.notes = notes
         self.duration_sec = duration_sec
