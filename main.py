@@ -1,22 +1,24 @@
 from core.models import Child, Observer, BehaviorType, BehaviorEntry
 from core.logic import add_child, list_all_children, add_observer, list_all_observer
 from core.logic import list_all_behavior_type, add_behavior_entry, list_behaviors_by_child
-from core.logic import list_all_categories, filter_behaviors
+from core.logic import list_all_categories, filter_behaviors, get_behavior_summary_by_category
+from core.logic import list_milestone_behavior_types
 
 
 from datetime import date
 
 def show_menu():
     print("\n=== Non-Verbal Communication Tracker ===")
-    print("1. Add a new child")
-    print("2. List all children")
-    print("3. Add a new Observer")
-    print("4. List all Observers")
-    print("5. Add a new Behavior Entry")
-    print("6. Lists all behavior entries for a specific child")
-    print("7. Filters behavior entries based child, category, observer or/and is consolidated")
-
-    print("0. Exit")
+    print(" 1. Add a new child")
+    print(" 2. List all children")
+    print(" 3. Add a new Observer")
+    print(" 4. List all Observers")
+    print(" 5. Add a new Behavior Entry")
+    print(" 6. Lists all behavior entries for a specific child")
+    print(" 7. Filters behavior entries based child, category, observer or/and is consolidated")
+    print(" 8. Behavior Summary by Category")
+    print(" 9. Lists all behavior types marked as milestone")
+    print(" 0. Exit")
 
 def main():
     while True:
@@ -171,6 +173,28 @@ def main():
                     print(f"- {behavior[4]}: {behavior[-2]} ({behavior[-1]}) - Consolidated: {behavior[7]}")
             else:
                 print(f"No behavior")
+
+        elif choice == "8":
+
+            children = list_all_children()
+            print("\nRegistered children:")
+            for child in children:
+                print(f"- {child.id}: {child.name} (Birthday: {child.date_of_birth})")
+
+            child_id = input("Enter child ID for summary: ")
+            summary = get_behavior_summary_by_category(child_id)
+            
+            print("\nBehavior Summary by Category:")
+            for category_name, behavior_count in summary:
+                print(f"- {category_name}: {behavior_count} behaviors")
+
+        elif choice == "9":
+
+            milestone_behaviors = list_milestone_behavior_types()
+            print("\nMilestone Behaviors:")
+            for milestone_behavior in milestone_behaviors:
+                print(f"- {milestone_behavior.id}: {milestone_behavior.name} — {milestone_behavior.description}")
+
 
         elif choice == "0":
             print("Goodbye!")

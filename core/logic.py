@@ -217,3 +217,95 @@ def list_all_categories():
     conn.close()
 
     return [Category(*row) for row in rows]
+
+
+def get_behavior_summary_by_category(child_id):
+    """
+    Returns the count of behaviors per category for a specific child.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT 
+            category.name AS category_name,
+            COUNT(*) AS behavior_count
+        FROM behavior_entry
+        JOIN behavior_type ON behavior_entry.behavior_type_id = behavior_type.id
+        JOIN category ON behavior_type.category_id = category.id
+        WHERE behavior_entry.child_id = %s
+        GROUP BY category.name
+        ORDER BY behavior_count DESC;
+    """, (child_id,))
+    
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return rows
+
+
+def get_child_by_id(child_id):
+    """
+    Retrieves a specific child by their ID.
+    Returns a Child object or None if not found.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    cur.execute("""
+        SELECT id, name, date_of_birth, date_of_diagnosis, notes
+        FROM child
+        WHERE id = %s;
+    """, (child_id,))
+    
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if row:
+        return Child(*row)
+    else:
+        return None
+
+
+def get_observer_by_id(observer_id):
+    """
+    Retrieves a specific observer by their ID.
+    Returns an Observer object or None if not found.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    cur.execute("""
+        SELECT id, name, relation, notes
+        FROM observer
+        WHERE id = %s;
+    """, (observer_id,))
+    
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if row:
+        return Observer(*row)
+    else:
+        return None
+    
+
+
+def list_milestone_behavior_types():
+    """
+    Lists all behavior types marked as milestone (is_milestone = TRUE).
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, name, description, category_id, is_milestone
+        FROM behavior_type
+        WHERE is_milestone = TRUE;
+    """)
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return [BehaviorType(*row) for row in rows]
