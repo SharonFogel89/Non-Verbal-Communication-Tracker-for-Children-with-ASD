@@ -4,12 +4,16 @@ from core.logic import list_all_behavior_type, add_behavior_entry, list_behavior
 from core.logic import list_all_categories, filter_behaviors, get_behavior_summary_by_category
 from core.logic import list_milestone_behavior_types, get_behavior_timeline_monthly, get_behavior_timeline_weekly
 from core.logic import list_open_alerts, resolve_alert, check_and_create_alerts
-from core.logic import export_all_behaviors_to_csv, export_child_data_to_csv
+from core.logic import export_all_behaviors_to_csv, export_child_data_to_csv, get_translation
 from datetime import date
+
+current_language = "en"  # "en", "pt", "he"
+
 
 def show_menu():
     print("\n=== Non-Verbal Communication Tracker ===")
-    print(" 1. Add a new child")
+
+    print(" 1. " + get_translation("Add a new child", current_language))
     print(" 2. List all children")
     print(" 3. Add a new Observer")
     print(" 4. List all Observers")
@@ -27,6 +31,8 @@ def show_menu():
     print(" 0. Exit")
 
 def main():
+
+    
     while True:
         show_menu()
         choice = input("Choose an option: ").strip()

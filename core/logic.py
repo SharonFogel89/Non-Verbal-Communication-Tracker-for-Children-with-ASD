@@ -552,3 +552,27 @@ def export_all_behaviors_to_csv(filename):
             writer.writerow(row)
 
     print(f"Exported {len(rows)} behaviors to {filename}")
+
+
+def get_translation(original_text, language_code):
+    """
+    Retrieves a translation for a given text and language.
+    Falls back to the original text if no translation is found.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    
+    cur.execute("""
+        SELECT translated_text
+        FROM translation
+        WHERE original_text = %s AND language_code = %s;
+    """, (original_text, language_code))
+    
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if row:
+        return row[0] 
+    else:
+        return original_text 
