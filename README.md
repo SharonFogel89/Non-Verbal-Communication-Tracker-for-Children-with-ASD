@@ -123,8 +123,6 @@ pip install -r requirements.txt
   - Hebrew 🇮🇱
 ---
 
-# Non-Verbal Communication Tracker for Children with ASD
-
 ## How to Set Up and Run the Application
 
 ### 1. Clone the Project
@@ -136,14 +134,14 @@ cd Non-Verbal-Communication-Tracker-for-Children-with-ASD
 
 ### 2. Create a Virtual Environment
 
-# For Windows:
+#### For Windows:
 
 ```bash
 python -m venv my_env
 venv\Scripts\activate
 ```
 
-# For Linux/Mac:
+#### For Linux/Mac:
 ```bash
 python3 -m venv my_env
 source my_env/bin/activate
@@ -163,7 +161,7 @@ pip install -r requirements.txt
 sudo apt update
 sudo apt install postgresql postgresql-contrib
 ```
-#     Start the PostgreSQL service:
+#### Start the PostgreSQL service:
 
 ```bash
 sudo service postgresql start
@@ -177,7 +175,7 @@ sudo service postgresql start
 sudo -u postgres psql
 ```
 
-#     Inside psql, run:
+#### Inside psql, run:
 
 ```bash
 CREATE DATABASE nonverbal_db;
@@ -192,7 +190,7 @@ sudo -u postgres psql -d nonverbal_db -f data/init_schema.sql
 
 ### 7. Configure the Database Connection
 
-#  Edit the file core/db_connection.py:
+####  Edit the file core/db_connection.py:
 
 ```bash
 import psycopg2
@@ -206,7 +204,7 @@ def get_connection():
         port="5432"
     )
 ```
-#  Replace your_password with your actual PostgreSQL password.
+####  Replace your_password with your actual PostgreSQL password.
 
 ### 8. Run the Application
 
@@ -214,6 +212,7 @@ def get_connection():
 python main.py
 ```
 
+---
 
 ## ❤️ Dedication
 
