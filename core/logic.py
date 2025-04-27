@@ -575,4 +575,36 @@ def get_translation(original_text, language_code):
     if row:
         return row[0] 
     else:
-        return original_text 
+        return original_text
+
+def show_achieved_milestones():
+    """
+    Displays milestones that have already been achieved by children.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT 
+            child.name AS child_name,
+            behavior_type.name AS milestone_name,
+            behavior_entry.behavior_date
+        FROM behavior_entry
+        JOIN behavior_type ON behavior_entry.behavior_type_id = behavior_type.id
+        JOIN child ON behavior_entry.child_id = child.id
+        WHERE behavior_type.is_milestone = TRUE
+        ORDER BY behavior_entry.behavior_date ASC;
+    """)
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    print("\n=== Achieved Milestones ===")
+    if rows:
+        for child_name, milestone_name, behavior_date in rows:
+            print(f"- {behavior_date.strftime('%Y-%m-%d')}: {child_name} achieved '{milestone_name}'")
+    else:
+        print("No achieved milestones yet.")
+    print("================================")

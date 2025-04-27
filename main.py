@@ -4,7 +4,7 @@ from core.logic import list_all_behavior_type, add_behavior_entry, list_behavior
 from core.logic import list_all_categories, filter_behaviors, get_behavior_summary_by_category
 from core.logic import list_milestone_behavior_types, get_behavior_timeline_monthly, get_behavior_timeline_weekly
 from core.logic import list_open_alerts, resolve_alert, check_and_create_alerts
-from core.logic import export_all_behaviors_to_csv, export_child_data_to_csv, get_translation
+from core.logic import export_all_behaviors_to_csv, export_child_data_to_csv, get_translation, show_achieved_milestones
 from datetime import date
 
 current_language = "en"  # "en", "pt", "he"
@@ -298,6 +298,6 @@ def main():
             print("Invalid option. Try again.")
 
 if __name__ == "__main__":
-
+    show_achieved_milestones()
     check_and_create_alerts()
     main()
