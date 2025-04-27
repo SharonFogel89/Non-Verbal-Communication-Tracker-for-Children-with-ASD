@@ -4,7 +4,7 @@ from core.logic import list_all_behavior_type, add_behavior_entry, list_behavior
 from core.logic import list_all_categories, filter_behaviors, get_behavior_summary_by_category
 from core.logic import list_milestone_behavior_types, get_behavior_timeline_monthly, get_behavior_timeline_weekly
 from core.logic import list_open_alerts, resolve_alert, check_and_create_alerts
-
+from core.logic import export_all_behaviors_to_csv, export_child_data_to_csv
 from datetime import date
 
 def show_menu():
@@ -22,7 +22,8 @@ def show_menu():
     print("11. Timeline (weekly)")
     print("12. List Open Alerts")
     print("13. Resolve an Alert")
-
+    print("14. Export behaviors of a child to CSV")
+    print("15. Export all behaviors to CSV")
     print(" 0. Exit")
 
 def main():
@@ -268,7 +269,20 @@ def main():
 
             else:
                 print("No open alerts found.")
-            
+
+        elif choice == "14":
+            children = list_all_children()
+            print("\nRegistered children:")
+            for child in children:
+                print(f"- {child.id}: {child.name}")
+
+            child_id = input("Enter the child's ID to export behaviors: ")
+            filename = input("Enter the filename (e.g., child_behaviors.csv): ")
+            export_child_data_to_csv(child_id, filename)
+
+        elif choice == "15":
+            filename = input("Enter the filename (e.g., all_behaviors.csv): ")
+            export_all_behaviors_to_csv(filename)           
             
         elif choice == "0":
             print("Goodbye!")

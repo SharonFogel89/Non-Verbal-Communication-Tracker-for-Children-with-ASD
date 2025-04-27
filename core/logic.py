@@ -1,3 +1,5 @@
+import csv
+
 from core.db_connection import get_connection
 from core.models import Child, Observer, BehaviorEntry, BehaviorType, Category
 
@@ -468,3 +470,85 @@ def check_and_create_alerts():
 
     cur.close()
     conn.close()
+
+def export_child_data_to_csv(child_id, filename):
+    """
+    Exports all behavior entries for a specific child to a CSV file.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT 
+            behavior_entry.behavior_date,
+            behavior_type.name AS behavior_name,
+            category.name AS category_name,
+            behavior_entry.notes,
+            behavior_entry.duration_sec,
+            behavior_entry.consolidated,
+            behavior_entry.base
+        FROM behavior_entry
+        JOIN behavior_type ON behavior_entry.behavior_type_id = behavior_type.id
+        JOIN category ON behavior_type.category_id = category.id
+        WHERE behavior_entry.child_id = %s
+        ORDER BY behavior_entry.behavior_date ASC;
+    """, (child_id,))
+
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    if not rows:
+        print("No behaviors found for this child.")
+        return
+
+    with open(filename, mode="w", newline='', encoding="utf-8") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["Date", "Behavior", "Category", "Notes", "Duration (sec)", "Consolidated", "Pre-existing"])
+
+        for row in rows:
+            writer.writerow(row)
+
+    print(f"Exported {len(rows)} behaviors to {filename}")
+
+
+def export_all_behaviors_to_csv(filename):
+    """
+    Exports all behavior entries from all children to a CSV file.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT 
+            child.name AS child_name,
+            behavior_entry.behavior_date,
+            behavior_type.name AS behavior_name,
+            category.name AS category_name,
+            behavior_entry.notes,
+            behavior_entry.duration_sec,
+            behavior_entry.consolidated,
+            behavior_entry.base
+        FROM behavior_entry
+        JOIN behavior_type ON behavior_entry.behavior_type_id = behavior_type.id
+        JOIN category ON behavior_type.category_id = category.id
+        JOIN child ON behavior_entry.child_id = child.id
+        ORDER BY behavior_entry.behavior_date ASC;
+    """)
+
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    if not rows:
+        print("No behaviors found in the database.")
+        return
+
+    with open(filename, mode="w", newline='', encoding="utf-8") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["Child", "Date", "Behavior", "Category", "Notes", "Duration (sec)", "Consolidated", "Pre-existing"])
+
+        for row in rows:
+            writer.writerow(row)
+
+    print(f"Exported {len(rows)} behaviors to {filename}")
