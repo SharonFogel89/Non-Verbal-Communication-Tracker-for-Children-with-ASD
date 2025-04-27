@@ -1,6 +1,8 @@
 from core.db_connection import get_connection
 from core.models import Child, Observer, BehaviorEntry, BehaviorType, Category
 
+from datetime import datetime, timedelta
+
 def add_child(child: Child):
     """
     Inserts a new child into the database using a Child object.
@@ -355,4 +357,114 @@ def get_behavior_timeline_weekly(child_id):
     cur.close()
     conn.close()
 
-    return rows  
+    return rows
+
+def list_open_alerts(child_id):
+    """
+    Lists all open (unsolved) alerts for a child.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT id, child_id, alert_date, description, solved
+        FROM alert
+        WHERE child_id = %s AND solved = FALSE
+        ORDER BY alert_date ASC;
+    """, (child_id,))
+    
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return rows
+
+def resolve_alert(alert_id):
+    """
+    Marks an alert as solved.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE alert
+        SET solved = TRUE
+        WHERE id = %s;
+    """, (alert_id,))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def check_and_create_alerts():
+    """
+    Checks if any child has not registered a behavior in the last 7 days and creates alerts if necessary.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+
+    # Busca todas as crianças
+    cur.execute("SELECT id, name FROM child;")
+    children = cur.fetchall()
+
+    today = datetime.now().date()
+    seven_days_ago = today - timedelta(days=7)
+
+    for child_id, child_name in children:
+
+        cur.execute("""
+            SELECT MAX(behavior_date)
+            FROM behavior_entry
+            WHERE child_id = %s;
+        """, (child_id,))
+        last_behavior_date = cur.fetchone()[0]
+
+        #print(f"{child_id} - {child_name}")
+        #print("Last behavior:", last_behavior_date)
+
+        if last_behavior_date is None or last_behavior_date.date() < seven_days_ago:
+            cur.execute("""
+                SELECT id
+                FROM alert
+                WHERE child_id = %s 
+                  AND solved = FALSE 
+                  AND alert_date >= %s;
+            """, (child_id, seven_days_ago))
+            existing_alert = cur.fetchone()
+
+            if not existing_alert:
+                description = f"No behaviors registered in the last 7 days for {child_name}."
+                cur.execute("""
+                    INSERT INTO alert (child_id, alert_date, description, solved)
+                    VALUES (%s, %s, %s, FALSE);
+                """, (child_id, today, description))
+                print(f"Alert created for {child_name}.")
+            else:
+                #print(f"Existing open alert found for {child_name}. No new alert created.")
+                pass
+        else:
+            #print(f"Recent behavior found for {child_name}. No alert needed.")
+            pass
+    conn.commit()
+
+
+    print("\n=== Open Alerts ===")
+    cur.execute("""
+        SELECT alert.id, child.name, alert.alert_date, alert.description
+        FROM alert
+        JOIN child ON alert.child_id = child.id
+        WHERE alert.solved = FALSE
+        ORDER BY alert.alert_date ASC;
+    """)
+    open_alerts = cur.fetchall()
+
+    if open_alerts:
+        for alert_id, child_name, alert_date, description in open_alerts:
+            print(f"- ID {alert_id} | {child_name} | {alert_date.strftime('%Y-%m-%d')} | {description}")
+    else:
+        print("No open alerts found.")
+
+
+    cur.close()
+    conn.close()

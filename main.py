@@ -3,7 +3,7 @@ from core.logic import add_child, list_all_children, add_observer, list_all_obse
 from core.logic import list_all_behavior_type, add_behavior_entry, list_behaviors_by_child
 from core.logic import list_all_categories, filter_behaviors, get_behavior_summary_by_category
 from core.logic import list_milestone_behavior_types, get_behavior_timeline_monthly, get_behavior_timeline_weekly
-
+from core.logic import list_open_alerts, resolve_alert, check_and_create_alerts
 
 from datetime import date
 
@@ -20,6 +20,9 @@ def show_menu():
     print(" 9. Lists all behavior types marked as milestone")
     print("10. Timeline (monthly)")
     print("11. Timeline (weekly)")
+    print("12. List Open Alerts")
+    print("13. Resolve an Alert")
+
     print(" 0. Exit")
 
 def main():
@@ -230,6 +233,43 @@ def main():
             else:
                 print("No behaviors found for this child.")
 
+        elif choice == "12":
+            children = list_all_children()
+            print("\nRegistered children:")
+            for child in children:
+                print(f"- {child.id}: {child.name} (Birthday: {child.date_of_birth})")
+
+            child_id = input("Enter the child's ID to list open alerts: ")
+            alerts = list_open_alerts(child_id)
+
+            if alerts:
+                print("\nOpen Alerts:")
+                for alert in alerts:
+                    print(f"- ID {alert[0]} on {alert[2]}: {alert[3]}")
+            else:
+                print("No open alerts found.")
+
+        elif choice == "13":
+            children = list_all_children()
+            print("\nRegistered children:")
+            for child in children:
+                print(f"- {child.id}: {child.name} (Birthday: {child.date_of_birth})")
+
+            child_id = input("Enter the child's ID to list open alerts: ")
+            alerts = list_open_alerts(child_id)
+            
+            if alerts:
+                print("\nOpen Alerts:")
+                for alert in alerts:
+                    print(f"- ID {alert[0]} on {alert[2]}: {alert[3]}")
+                    alert_id = input("Enter the alert ID to mark as solved: ")
+                    resolve_alert(alert_id)
+                    print(f"Alert {alert_id} has been marked as solved.")
+
+            else:
+                print("No open alerts found.")
+            
+            
         elif choice == "0":
             print("Goodbye!")
             break
@@ -238,4 +278,6 @@ def main():
             print("Invalid option. Try again.")
 
 if __name__ == "__main__":
+
+    check_and_create_alerts()
     main()
