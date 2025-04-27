@@ -122,6 +122,99 @@ pip install -r requirements.txt
   - English 🇺🇸
   - Hebrew 🇮🇱
 ---
+
+# Non-Verbal Communication Tracker for Children with ASD
+
+## How to Set Up and Run the Application
+
+### 1. Clone the Project
+
+```bash
+git clone https://github.com/your-repository/Non-Verbal-Communication-Tracker-for-Children-with-ASD.git
+cd Non-Verbal-Communication-Tracker-for-Children-with-ASD
+```
+
+### 2. Create a Virtual Environment
+
+# For Windows:
+
+```bash
+python -m venv my_env
+venv\Scripts\activate
+```
+
+# For Linux/Mac:
+```bash
+python3 -m venv my_env
+source my_env/bin/activate
+```
+
+
+### 3. Install the Required Packages
+
+```bash
+pip install -r requirements.txt
+```
+### 4. Install and Start PostgreSQL
+
+    Install PostgreSQL:
+
+```bash
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+```
+#     Start the PostgreSQL service:
+
+```bash
+sudo service postgresql start
+```
+
+### 5. Create the Database
+
+#     Access PostgreSQL:
+
+```bash
+sudo -u postgres psql
+```
+
+#     Inside psql, run:
+
+```bash
+CREATE DATABASE nonverbal_db;
+\q
+```
+
+### 6. Initialize the Database Schema
+
+```bash
+sudo -u postgres psql -d nonverbal_db -f data/init_schema.sql
+```
+
+### 7. Configure the Database Connection
+
+#  Edit the file core/db_connection.py:
+
+```bash
+import psycopg2
+
+def get_connection():
+    return psycopg2.connect(
+        dbname="nonverbal_db",
+        user="postgres",
+        password="your_password",
+        host="localhost",
+        port="5432"
+    )
+```
+#  Replace your_password with your actual PostgreSQL password.
+
+### 8. Run the Application
+
+```bash
+python main.py
+```
+
+
 ## ❤️ Dedication
 
 This project is dedicated to **Hannah Zukerman**, my beloved daughter, whose strength and uniqueness inspire this work.
